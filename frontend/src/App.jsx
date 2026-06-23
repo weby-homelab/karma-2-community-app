@@ -235,6 +235,14 @@ function App() {
   return (
     <>
       <div className="glass-panel header">
+        <button 
+          className="info-btn" 
+          onClick={() => setShowInfo(!showInfo)}
+          aria-label={t.info_btn_label}
+        >
+          ℹ️
+        </button>
+
         <div className="lang-switcher">
           <button 
             className={`lang-btn ${lang === 'ua' ? 'active' : ''}`} 
@@ -253,13 +261,6 @@ function App() {
 
         <div className="header-title-container">
           <h1>{getDisplayTitle()}</h1>
-          <button 
-            className="info-btn" 
-            onClick={() => setShowInfo(!showInfo)}
-            aria-label={t.info_btn_label}
-          >
-            ℹ️
-          </button>
         </div>
         
         {showInfo && (
@@ -459,7 +460,7 @@ function App() {
           </a>
         </p>
         <p>
-          &copy; 2026 Weby Homelab &bull; Ext &bull;{' '}
+          &copy; 2026 Weby Homelab &bull;{' '}
           <a href="https://github.com/weby-homelab/karma-2-community-app" target="_blank" rel="noopener noreferrer" className="version-link">
             v{version}
           </a>
