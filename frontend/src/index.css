@@ -793,6 +793,9 @@ button[type="submit"]:active:not(:disabled),
 }
 
 .info-btn {
+  position: absolute;
+  top: 10px;
+  left: 14px;
   background: transparent;
   border: none;
   font-size: 1.15rem;
