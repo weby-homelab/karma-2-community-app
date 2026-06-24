@@ -21,7 +21,7 @@ const TRANSLATIONS = {
     quality_desc: 'Масовий флуд без зворотних реакцій суттєво знижує підсумкову карму.',
     anti_cheat: 'Анти-накрутка:',
     anti_cheat_desc: 'Повторні реакції між тими ж користувачами мають згасаючу вагу.',
-    welcome_title: '👋 Ласкаво просимо до KRUHLYK Karma!',
+    welcome_title: '👋 Ласкаво просимо до KARMA-2-Community-app!',
     welcome_intro: 'Ваша система оцінки активності чату ще не налаштована. Слідуйте цим простим крокам, щоб запустити її:',
     step1_title: '🤖 Додайте бота до чату',
     step1_desc: 'Запросіть вашого Telegram-бота в групу як адміністратора, щоб він міг реєструвати реакції на повідомлення.',
@@ -71,7 +71,7 @@ const TRANSLATIONS = {
     quality_desc: 'Mass flooding without outgoing reactions severely reduces the final karma.',
     anti_cheat: 'Anti-boost Protection:',
     anti_cheat_desc: 'Repeated reactions between the same users have decaying weight.',
-    welcome_title: '👋 Welcome to KRUHLYK Karma!',
+    welcome_title: '👋 Welcome to KARMA-2-Community-app!',
     welcome_intro: 'Your chat activity scoring system is not set up yet. Follow these simple steps to launch it:',
     step1_title: '🤖 Add Bot to Chat',
     step1_desc: 'Invite your Telegram bot to the group as an admin so it can register message reactions.',
@@ -115,7 +115,7 @@ function App() {
   const [activeUserDetail, setActiveUserDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [lang, setLang] = useState(() => {
-    return localStorage.getItem('karma_lang') || 'ua';
+    return localStorage.getItem('karma_lang') || 'en';
   });
 
   const toggleLang = (l) => {

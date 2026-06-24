@@ -782,6 +782,14 @@ button[type="submit"]:active:not(:disabled),
   border: 1px solid var(--glass-border);
   color: var(--text-main);
 }
+.status-box.success {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+.status-box.error {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
 
 .back-link {
   color: var(--text-muted);
