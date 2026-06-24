@@ -1,7 +1,101 @@
 import { useState, useEffect } from 'react';
 import './index.css';
 
+const TRANSLATIONS = {
+  ua: {
+    first_setup_title: '🚀 Перше налаштування',
+    first_setup_subtitle: 'Встановіть пароль адміністратора для керування системою.',
+    new_password_placeholder: 'Встановіть новий пароль',
+    set_password_btn: 'Встановити пароль',
+    set_password_loading: 'Налаштування...',
+    password_set_success: '✅ Пароль встановлено! Тепер ви можете увійти.',
+    login_title: '🔒 Вхід в Адмін-панель',
+    login_subtitle: 'Введіть пароль адміністратора для керування системою.',
+    password_placeholder: 'Пароль',
+    login_btn: 'Увійти',
+    login_loading: 'Перевірка...',
+    wrong_password: '❌ Невірний пароль',
+    error_prefix: '❌ Помилка: ',
+    error_conn_prefix: "❌ Помилка з'єднання: ",
+    admin_panel_title: '⚙️ Адмін-панель',
+    tab_settings: 'Налаштування',
+    tab_data: 'Імпорт Даних',
+    site_title_label: 'Заголовок сайту:',
+    site_title_placeholder: '🏆 Рейтинг KRUHLYK Community',
+    bot_token_label: 'Telegram Bot Token:',
+    bot_token_placeholder: '123456789:ABCdefGHIjklmNOPqrsTUVwxyz',
+    chat_id_label: 'Chat ID (опціонально, напр. -100123456789):',
+    webapp_url_label: 'WebApp URL (для кнопки Start):',
+    owner_id_label: 'Telegram ID власника чату (для відображення на почесному місці):',
+    owner_id_placeholder: 'Наприклад: 123456789',
+    new_admin_password_label: 'Змінити пароль Адміна (залиште пустим, якщо не треба):',
+    new_admin_password_placeholder: 'Новий пароль...',
+    save_settings_btn: '💾 Зберегти налаштування',
+    saving: 'Збереження...',
+    saving_and_restarting: 'Збереження та перезапуск бота...',
+    settings_saved_success: '✅ Налаштування збережено! Бот перезапускається (зачекайте пару секунд).',
+    settings_save_error: '❌ Помилка збереження',
+    export_history_label: 'Експорт історії (result.json):',
+    select_file_error: 'Будь ласка, оберіть файл.',
+    upload_loading: 'Завантаження та обробка...',
+    upload_success: '✅ Базу успішно очищено та оновлено з нового файлу!',
+    upload_btn: '🔄 Очистити базу та Завантажити JSON',
+    back_to_main: '← Повернутися на головну'
+  },
+  en: {
+    first_setup_title: '🚀 First-time Setup',
+    first_setup_subtitle: 'Set the administrator password to manage the system.',
+    new_password_placeholder: 'Set a new password',
+    set_password_btn: 'Set Password',
+    set_password_loading: 'Configuring...',
+    password_set_success: '✅ Password configured! You can now log in.',
+    login_title: '🔒 Admin Login',
+    login_subtitle: 'Enter the administrator password to manage the system.',
+    password_placeholder: 'Password',
+    login_btn: 'Login',
+    login_loading: 'Verifying...',
+    wrong_password: '❌ Incorrect password',
+    error_prefix: '❌ Error: ',
+    error_conn_prefix: '❌ Connection error: ',
+    admin_panel_title: '⚙️ Admin Panel',
+    tab_settings: 'Settings',
+    tab_data: 'Import Data',
+    site_title_label: 'Site Title:',
+    site_title_placeholder: '🏆 KRUHLYK Community Rating',
+    bot_token_label: 'Telegram Bot Token:',
+    bot_token_placeholder: '123456789:ABCdefGHIjklmNOPqrsTUVwxyz',
+    chat_id_label: 'Chat ID (optional, e.g. -100123456789):',
+    webapp_url_label: 'WebApp URL (for the Start button):',
+    owner_id_label: 'Chat Owner Telegram ID (to display in the honorary place):',
+    owner_id_placeholder: 'Example: 123456789',
+    new_admin_password_label: 'Change Admin Password (leave blank if unchanged):',
+    new_admin_password_placeholder: 'New password...',
+    save_settings_btn: '💾 Save Settings',
+    saving: 'Saving...',
+    saving_and_restarting: 'Saving and restarting bot...',
+    settings_saved_success: '✅ Settings saved! The bot is restarting (wait a couple of seconds).',
+    settings_save_error: '❌ Failed to save settings',
+    export_history_label: 'Chat History Export (result.json):',
+    select_file_error: 'Please select a file.',
+    upload_loading: 'Uploading and processing...',
+    upload_success: '✅ Database cleared and updated from the new file successfully!',
+    upload_btn: '🔄 Clear Database & Upload JSON',
+    back_to_main: '← Back to Main Page'
+  }
+};
+
 export default function Admin() {
+  const [lang, setLang] = useState(() => {
+    return localStorage.getItem('karma_lang') || 'en';
+  });
+
+  const toggleLang = (l) => {
+    setLang(l);
+    localStorage.setItem('karma_lang', l);
+  };
+
+  const t = TRANSLATIONS[lang];
+
   const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isConfigured, setIsConfigured] = useState(true);
@@ -55,14 +149,14 @@ export default function Admin() {
       
       if (res.ok) {
         setIsConfigured(true);
-        setStatus('✅ Пароль встановлено! Тепер ви можете увійти.');
+        setStatus('password_set_success');
         setPassword('');
       } else {
         const data = await res.json();
-        setStatus(`❌ Помилка: ${data.error}`);
+        setStatus('error_prefix' + data.error);
       }
     } catch (err) {
-      setStatus(`❌ Помилка: ${err.message}`);
+      setStatus('error_prefix' + err.message);
     } finally {
       setLoading(false);
     }
@@ -84,10 +178,10 @@ export default function Admin() {
         setIsLoggedIn(true);
         fetchSettings();
       } else {
-        setStatus('❌ Невірний пароль');
+        setStatus('wrong_password');
       }
     } catch (err) {
-      setStatus(`❌ Помилка: ${err.message}`);
+      setStatus('error_prefix' + err.message);
     } finally {
       setLoading(false);
     }
@@ -112,7 +206,7 @@ export default function Admin() {
   const handleSaveSettings = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setStatus('Збереження та перезапуск бота...');
+    setStatus('saving_and_restarting');
     
     try {
       const res = await fetch(`${apiUrl}/api/admin/settings`, {
@@ -122,12 +216,12 @@ export default function Admin() {
       });
       
       if (res.ok) {
-        setStatus('✅ Налаштування збережено! Бот перезапускається (зачекайте пару секунд).');
+        setStatus('settings_saved_success');
       } else {
-        setStatus('❌ Помилка збереження');
+        setStatus('settings_save_error');
       }
     } catch (err) {
-      setStatus(`❌ Помилка: ${err.message}`);
+      setStatus('error_prefix' + err.message);
     } finally {
       setLoading(false);
     }
@@ -136,12 +230,12 @@ export default function Admin() {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
-      setStatus('Будь ласка, оберіть файл.');
+      setStatus('select_file_error');
       return;
     }
 
     setLoading(true);
-    setStatus('Завантаження та обробка...');
+    setStatus('upload_loading');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -154,39 +248,78 @@ export default function Admin() {
       });
 
       if (res.ok) {
-        setStatus('✅ Базу успішно очищено та оновлено з нового файлу!');
+        setStatus('upload_success');
       } else {
         const errorText = await res.text();
-        setStatus(`❌ Помилка: ${errorText}`);
+        setStatus('error_prefix' + errorText);
       }
     } catch (err) {
-      setStatus(`❌ Помилка з'єднання: ${err.message}`);
+      setStatus('error_conn_prefix' + err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderStatus = () => {
+    if (!status) return null;
+    if (status.startsWith('error_prefix')) {
+      return t.error_prefix + status.replace('error_prefix', '');
+    }
+    if (status.startsWith('error_conn_prefix')) {
+      return t.error_conn_prefix + status.replace('error_conn_prefix', '');
+    }
+    return t[status] || status;
+  };
+
+  const getStatusClass = () => {
+    if (!status) return '';
+    if (status === 'password_set_success' || status === 'settings_saved_success' || status === 'upload_success') {
+      return 'success';
+    }
+    if (status === 'wrong_password' || status === 'settings_save_error' || status.startsWith('error_prefix') || status.startsWith('error_conn_prefix') || status === 'select_file_error') {
+      return 'error';
+    }
+    return '';
   };
 
   if (!isLoggedIn) {
     if (!isConfigured) {
       return (
         <>
+          <div className="top-bar" style={{ justifyContent: 'flex-end' }}>
+            <div className="lang-switcher">
+              <button 
+                className={`lang-btn ${lang === 'ua' ? 'active' : ''}`} 
+                onClick={() => toggleLang('ua')}
+              >
+                UA
+              </button>
+              <span className="lang-divider">|</span>
+              <button 
+                className={`lang-btn ${lang === 'en' ? 'active' : ''}`} 
+                onClick={() => toggleLang('en')}
+              >
+                EN
+              </button>
+            </div>
+          </div>
           <div className="glass-panel header">
-            <h1>🚀 Перше налаштування</h1>
-            <p>Встановіть пароль адміністратора для керування системою.</p>
+            <h1>{t.first_setup_title}</h1>
+            <p>{t.first_setup_subtitle}</p>
           </div>
           <div className="glass-panel">
             <form onSubmit={handleSetup} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <input 
                 type="password" 
-                placeholder="Встановіть новий пароль"
+                placeholder={t.new_password_placeholder}
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
               />
               <button type="submit" disabled={loading} style={{ padding: '12px', background: '#28a745', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
-                {loading ? 'Налаштування...' : 'Встановити пароль'}
+                {loading ? t.set_password_loading : t.set_password_btn}
               </button>
             </form>
-            {status && <div className={`status-message ${status.startsWith('✅') ? 'success' : 'error'}`}>{status}</div>}
+            {status && <div className={`status-message ${getStatusClass()}`}>{renderStatus()}</div>}
           </div>
         </>
       );
@@ -194,23 +327,40 @@ export default function Admin() {
 
     return (
       <>
+        <div className="top-bar" style={{ justifyContent: 'flex-end' }}>
+          <div className="lang-switcher">
+            <button 
+              className={`lang-btn ${lang === 'ua' ? 'active' : ''}`} 
+              onClick={() => toggleLang('ua')}
+            >
+              UA
+            </button>
+            <span className="lang-divider">|</span>
+            <button 
+              className={`lang-btn ${lang === 'en' ? 'active' : ''}`} 
+              onClick={() => toggleLang('en')}
+            >
+              EN
+            </button>
+          </div>
+        </div>
         <div className="glass-panel header">
-          <h1>🔒 Вхід в Адмін-панель</h1>
-          <p>Введіть пароль адміністратора для керування системою.</p>
+          <h1>{t.login_title}</h1>
+          <p>{t.login_subtitle}</p>
         </div>
         <div className="glass-panel">
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <input 
               type="password" 
-              placeholder="Пароль"
+              placeholder={t.password_placeholder}
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
             />
             <button type="submit" disabled={loading} style={{ padding: '12px', background: '#0088cc', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-              {loading ? 'Перевірка...' : 'Увійти'}
+              {loading ? t.login_loading : t.login_btn}
             </button>
           </form>
-          {status && <div className={`status-message ${status.startsWith('✅') ? 'success' : 'error'}`}>{status}</div>}
+          {status && <div className={`status-message ${getStatusClass()}`}>{renderStatus()}</div>}
         </div>
       </>
     );
@@ -218,11 +368,28 @@ export default function Admin() {
 
   return (
     <>
+      <div className="top-bar" style={{ justifyContent: 'flex-end' }}>
+        <div className="lang-switcher">
+          <button 
+            className={`lang-btn ${lang === 'ua' ? 'active' : ''}`} 
+            onClick={() => toggleLang('ua')}
+          >
+            UA
+          </button>
+          <span className="lang-divider">|</span>
+          <button 
+            className={`lang-btn ${lang === 'en' ? 'active' : ''}`} 
+            onClick={() => toggleLang('en')}
+          >
+            EN
+          </button>
+        </div>
+      </div>
       <div className="glass-panel header">
-        <h1>⚙️ Адмін-панель</h1>
+        <h1>{t.admin_panel_title}</h1>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '15px' }}>
-          <button onClick={() => {setActiveTab('settings'); setStatus('');}} style={{ padding: '8px 15px', background: activeTab === 'settings' ? '#0088cc' : '#444', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Налаштування</button>
-          <button onClick={() => {setActiveTab('data'); setStatus('');}} style={{ padding: '8px 15px', background: activeTab === 'data' ? '#0088cc' : '#444', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Імпорт Даних</button>
+          <button onClick={() => {setActiveTab('settings'); setStatus('');}} style={{ padding: '8px 15px', background: activeTab === 'settings' ? '#0088cc' : '#444', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>{t.tab_settings}</button>
+          <button onClick={() => {setActiveTab('data'); setStatus('');}} style={{ padding: '8px 15px', background: activeTab === 'data' ? '#0088cc' : '#444', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>{t.tab_data}</button>
         </div>
       </div>
 
@@ -230,53 +397,53 @@ export default function Admin() {
         {activeTab === 'settings' ? (
           <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div>
-              <label className="admin-label">Заголовок сайту:</label>
-              <input type="text" value={settings.site_title || ''} onChange={e => setSettings({...settings, site_title: e.target.value})} placeholder="🏆 Рейтинг KRUHLYK Community" />
+              <label className="admin-label">{t.site_title_label}</label>
+              <input type="text" value={settings.site_title || ''} onChange={e => setSettings({...settings, site_title: e.target.value})} placeholder={t.site_title_placeholder} />
             </div>
             <div>
-              <label className="admin-label">Telegram Bot Token:</label>
-              <input type="text" value={settings.bot_token || ''} onChange={e => setSettings({...settings, bot_token: e.target.value})} placeholder="123456789:ABCdefGHIjklmNOPqrsTUVwxyz" />
+              <label className="admin-label">{t.bot_token_label}</label>
+              <input type="text" value={settings.bot_token || ''} onChange={e => setSettings({...settings, bot_token: e.target.value})} placeholder={t.bot_token_placeholder} />
             </div>
             <div>
-              <label className="admin-label">Chat ID (опціонально, напр. -100123456789):</label>
+              <label className="admin-label">{t.chat_id_label}</label>
               <input type="text" value={settings.chat_id || ''} onChange={e => setSettings({...settings, chat_id: e.target.value})} placeholder="-100123456789" />
             </div>
             <div>
-              <label className="admin-label">WebApp URL (для кнопки Start):</label>
+              <label className="admin-label">{t.webapp_url_label}</label>
               <input type="text" value={settings.webapp_url || ''} onChange={e => setSettings({...settings, webapp_url: e.target.value})} placeholder="https://kruhlyk.srvrs.top/" />
             </div>
             <div>
-              <label className="admin-label">Telegram ID власника чату (для відображення на почесному місці):</label>
-              <input type="text" value={settings.chat_owner_id || ''} onChange={e => setSettings({...settings, chat_owner_id: e.target.value})} placeholder="Наприклад: 123456789" />
+              <label className="admin-label">{t.owner_id_label}</label>
+              <input type="text" value={settings.chat_owner_id || ''} onChange={e => setSettings({...settings, chat_owner_id: e.target.value})} placeholder={t.owner_id_placeholder} />
             </div>
             <div>
-              <label className="admin-label">Змінити пароль Адміна (залиште пустим, якщо не треба):</label>
-              <input type="text" value={settings.admin_password || ''} onChange={e => setSettings({...settings, admin_password: e.target.value})} placeholder="Новий пароль..." />
+              <label className="admin-label">{t.new_admin_password_label}</label>
+              <input type="text" value={settings.admin_password || ''} onChange={e => setSettings({...settings, admin_password: e.target.value})} placeholder={t.new_admin_password_placeholder} />
             </div>
             <button type="submit" disabled={loading} style={{ padding: '12px', background: '#28a745', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
-              {loading ? 'Збереження...' : '💾 Зберегти налаштування'}
+              {loading ? t.saving : t.save_settings_btn}
             </button>
           </form>
         ) : (
           <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div>
-              <label className="admin-label">Експорт історії (result.json):</label>
+              <label className="admin-label">{t.export_history_label}</label>
               <input type="file" accept=".json" onChange={(e) => setFile(e.target.files[0])} style={{ width: '100%', padding: '10px' }} />
             </div>
             <button type="submit" disabled={loading} style={{ padding: '12px', background: '#0088cc', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
-              {loading ? 'Обробка...' : '🔄 Очистити базу та Завантажити JSON'}
+              {loading ? t.upload_loading : t.upload_btn}
             </button>
           </form>
         )}
         
         {status && (
-          <div className="status-box">
-            {status}
+          <div className={`status-box ${getStatusClass()}`}>
+            {renderStatus()}
           </div>
         )}
         
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <a href="/" className="back-link">← Повернутися на головну</a>
+            <a href="/" className="back-link">{t.back_to_main}</a>
         </div>
       </div>
 
