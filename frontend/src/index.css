@@ -533,7 +533,7 @@ button[type="submit"]:active:not(:disabled),
 }
 
 .karma-bar-segment.empty {
-  background: var(--bg-surface-hover);
+  background: rgba(156, 163, 175, 0.4);
 }
 
 

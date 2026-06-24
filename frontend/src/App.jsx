@@ -371,7 +371,7 @@ function App() {
                           title={`${t.skeptic_tag}: ${Math.round(settings.owner_info.karma_skeptic || 0)}`}
                         />
                       )}
-                      {(settings.owner_info.karma || 0) === 0 && (
+                      {((settings.owner_info.karma || 0) === 0 || ((settings.owner_info.karma_flooder || 0) + (settings.owner_info.karma_guru || 0) + (settings.owner_info.karma_skeptic || 0)) === 0) && (
                         <div 
                           className="karma-bar-segment empty" 
                           style={{ width: '100%' }}
@@ -435,7 +435,7 @@ function App() {
                             title={`${t.skeptic_tag}: ${Math.round(skeptic)}`}
                           />
                         )}
-                        {total === 0 && (
+                        {(total === 0 || sum === 0) && (
                           <div 
                             className="karma-bar-segment empty" 
                             style={{ width: '100%' }}
@@ -514,7 +514,7 @@ function App() {
                     style={{ width: `${skepticPct}%` }}
                   />
                 )}
-                {total === 0 && (
+                {(total === 0 || sum === 0) && (
                   <div 
                     className="karma-bar-segment empty" 
                     style={{ width: '100%' }}
